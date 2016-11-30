@@ -420,7 +420,12 @@ def aws_host(resource, module_name):
                    'aws_az=' + attrs['availability_zone'],
                    'aws_key_name=' + attrs['key_name'],
                    'aws_tenancy=' + attrs['tenancy']])
-    groups.extend('aws_tag_%s=%s' % item for item in attrs['tags'].items())
+
+    for item in attrs['tags'].items():
+        subitems = item[1].split(',')
+        for subitem in subitems:
+            groups.append('aws_tag_%s_%s' % (item[0], subitem))
+
     groups.extend('aws_vpc_security_group=' + group
                   for group in attrs['vpc_security_group_ids'])
     groups.extend('aws_subnet_%s=%s' % subnet
